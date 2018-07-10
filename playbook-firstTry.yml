@@ -1,0 +1,14 @@
+---
+#First try of an ansible import_playbook
+- name: Install HTTPD and MariaDB
+  hosts: all
+  tasks:
+  - name: Install HTTPD
+    yum:
+      name: httpd
+      state: latest
+  
+  - name: Install MariaDB
+    yum:
+      name: mariadb-server
+      state: latest
