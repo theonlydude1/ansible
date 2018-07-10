@@ -1,14 +1,42 @@
 ---
 #First try of an ansible import_playbook
-- name: Install HTTPD and MariaDB
+- name: [Play 1] Install webservices on Linux servers
   hosts: linux
   
   tasks:
-  - name: Install services
+  - name: Install web services on redhat based servers
     dnf:
       name: "{{ item }}"
       state: latest
     with_items:
       - httpd
       - mariadb-server
-    when: ansible_distribution == 'Fedora'
+      - firewalld
+    when: ansible_distribution == 'Fedora' or ansible_distribution == 'RedHat' or ansible_distribution == 'CentOs'
+
+  - name: Install web services on Debian based servers
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - httpd
+      - mariadb-server
+      - firewalld
+    when: ansible_distribution == 'Debian'    
+  
+  - name: Start web services
+    service:
+      name: "{{ item }}"
+      state: started
+      enabled: true
+    with_items:
+      - httpd
+      - mariadb
+      - firewalld
+ 
+  - name: Configure Firewalld
+    firewalld:
+      state: enabled
+      immediate: yes
+      service: http
+      permanent: yes
