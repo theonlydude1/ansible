@@ -4,12 +4,11 @@
   hosts: linux
   
   tasks:
-  - name: Install HTTPD
+  - name: Install services
     dnf:
-      name: httpd
+      name: "{{ item }}"
       state: latest
-        
-  - name: Install MariaDB
-    dnf:
-      name: mariadb-server
-      state: latest
+    with_items:
+      - httpd
+      - mariadb-server
+    when: ansible_distribution == 'Fedora'
